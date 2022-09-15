@@ -3,6 +3,7 @@ package com.practice.mydrawingapp
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import java.util.jar.Attributes
@@ -31,7 +32,7 @@ class DrawingView(context: Context,attrs:AttributeSet) : View(context, attrs) {
         mDrawPaint!!.strokeJoin =Paint.Join.ROUND
         mDrawPaint!!.strokeCap =Paint.Cap.ROUND
         mCanvasPaint = Paint(Paint.DITHER_FLAG)
-        mBrushSize = 20.toFloat()
+        //mBrushSize = 20.toFloat()
     }
 //just give onSizeChanged it will be giving a pop up override
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -85,6 +86,12 @@ if (!mDrawPath!!.isEmpty){
         return true
        // return super.onTouchEvent(event)
     }
+    fun setSizeForBrush(newsize : Float){
+        mBrushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        newsize, resources.displayMetrics)
+        mDrawPaint!!.strokeWidth = mBrushSize
+    }
+
 
 
 //this is nested class only used inside the drawing view
