@@ -1,13 +1,10 @@
 package com.practice.mydrawingapp
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
-import java.nio.file.Path
 import java.util.jar.Attributes
 
 //if you need to draw something then definately we need view
@@ -34,11 +31,54 @@ class DrawingView(context: Context,attrs:AttributeSet) : View(context, attrs) {
         mCanvasPaint = Paint(Paint.DITHER_FLAG)
         mBrushSize = 20.toFloat()
     }
+//just give onSizeChanged it will be giving a pop up override
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        mCanvasBitmap = Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888)
+    //since mcanvasbitmap is a nullable so use !!
+        canvas = Canvas(mCanvasBitmap!!)
+    }
+//this onDraw method usually requires canvas in order to write or draw something
+    //change canvas to canvas? if it fails
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+    canvas.drawBitmap(mCanvasBitmap!!,0f,0f,mCanvasPaint)
+if (!mDrawPath!!.isEmpty){
+    mDrawPaint!!.strokeWidth = mDrawPath!!.brushThickness
+    mDrawPaint!!.color = mDrawPaint!!.color
+    canvas.drawPath(mDrawPath!!,mDrawPaint!!)
+}
+    }
 
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        var touchX = event?.x
+        var touchY = event?.y
+
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -> {
+                mDrawPath!!.color = color
+                mDrawPath!!.brushThickness = mBrushSize
+                mDrawPath!!.reset()
+                        mDrawPath!!.moveTo(touchX!!, touchY!!)
+            }
+            MotionEvent.ACTION_MOVE -> {
+
+                        mDrawPath!!.lineTo(touchX!!, touchY!!)
+            }
+            MotionEvent.ACTION_UP -> {
+                mDrawPath = CustomPath(color, mBrushSize)
+            }
+            else -> return false
+        }
+        invalidate()
+
+        return true
+       // return super.onTouchEvent(event)
+    }
 
 
 //this is nested class only used inside the drawing view
- internal inner class CustomPath(var color:Int,var brushThickness: Float) : Path{
+ internal inner class CustomPath(var color:Int,var brushThickness: Float) : Path(){
 
 }
 
