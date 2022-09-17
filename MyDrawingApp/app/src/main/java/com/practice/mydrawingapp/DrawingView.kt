@@ -92,7 +92,12 @@ if (!mDrawPath!!.isEmpty){
         mDrawPaint!!.strokeWidth = mBrushSize
     }
 
+fun setColor(newColor:String){
+    color=Color.parseColor(newColor)
+    mDrawPaint!!.color = color
 
+
+}
 
 //this is nested class only used inside the drawing view
  internal inner class CustomPath(var color:Int,var brushThickness: Float) : Path(){
